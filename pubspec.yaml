@@ -4,7 +4,9 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.2.0 <4.0.0' # Pastikan Anda menggunakan Dart 3
+  # INI ADALAH PERBAIKAN DARI ERROR SEBELUMNYA
+  # Pastikan indentasi (spasi) di depannya benar
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -29,6 +31,7 @@ dependencies:
   # File Handling
   image_picker: ^1.1.2
   file_picker: ^8.0.5
+  open_filex: ^4.4.0 # Ini package baru yang kita tambahkan
 
 dev_dependencies:
   flutter_test:

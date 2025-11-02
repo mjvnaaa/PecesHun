@@ -6,6 +6,7 @@ import 'package:apkpribadi/core/utils/formatters.dart';
 import 'package:apkpribadi/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:open_filex/open_filex.dart'; // <-- DITAMBAHKAN
 
 class TransactionDetailScreen extends StatelessWidget {
   final TransactionModel transaction;
@@ -21,8 +22,7 @@ class TransactionDetailScreen extends StatelessWidget {
     final color = transaction.type == TransactionType.income
         ? AppColors.income
         : AppColors.expense;
-    final sign =
-        transaction.type == TransactionType.income ? '+' : '-';
+    final sign = transaction.type == TransactionType.income ? '+' : '-';
 
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +78,7 @@ class TransactionDetailScreen extends StatelessWidget {
             title: 'Catatan',
             value: transaction.notes ?? '-',
           ),
-          
+
           const Divider(height: 32),
 
           // Bukti Transaksi
@@ -93,13 +93,15 @@ class TransactionDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, {required IconData icon, required String title, required String value}) {
+  Widget _buildDetailRow(BuildContext context,
+      {required IconData icon, required String title, required String value}) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
       title: Text(title, style: Theme.of(context).textTheme.bodySmall),
       subtitle: Text(
         value,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+        style:
+            Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -134,7 +136,7 @@ class TransactionDetailScreen extends StatelessWidget {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-             return const Center(child: Text('Gagal memuat gambar.'));
+            return const Center(child: Text('Gagal memuat gambar.'));
           },
         ),
       );
@@ -148,12 +150,21 @@ class TransactionDetailScreen extends StatelessWidget {
           title: Text(p.basename(file.path)),
           subtitle: const Text('File dokumen'),
           trailing: const Icon(Iconsax.arrow_right_3),
-          onTap: () {
-            // TODO: Tambahkan 'open_file' package untuk membuka file ini
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Membuka file... (fitur Opsional)')),
-            );
+          // --- DIPERBAIKI ---
+          onTap: () async {
+            // Menggunakan OpenFilex untuk membuka file
+            final result = await OpenFilex.open(file.path);
+            if (result.type != ResultType.done) {
+              // Tampilkan error jika gagal (misal: tidak ada aplikasi pembuka PDF)
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text('Gagal membuka file: ${result.message}')),
+                );
+              }
+            }
           },
+          // --- AKHIR PERBAIKAN ---
         ),
       );
     }

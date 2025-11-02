@@ -1,7 +1,7 @@
 // lib/presentation/screens/add_transaction/add_transaction_screen.dart
 import 'dart:io';
 import 'package:path/path.dart' as p; // <-- DIPERBAIKI: package:path
-import 'package:apkpribadi/core/constants.dart';
+import 'package:apkpribadi/core/constants.dart'; // <-- DIPERBAIKI: Import konstanta
 import 'package:apkpribadi/core/utils/formatters.dart';
 import 'package:apkpribadi/data/models/transaction_model.dart';
 import 'package:apkpribadi/providers/transaction_provider.dart';
@@ -14,16 +14,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-// Contoh Kategori
-const List<String> kIncomeCategories = ['Gaji', 'Bonus', 'Investasi', 'Lainnya'];
-const List<String> kExpenseCategories = [
-  'Makanan',
-  'Transportasi',
-  'Tagihan',
-  'Hiburan',
-  'Belanja',
-  'Lainnya'
-];
+// --- DIHAPUS ---
+// Daftar kategori dipindahkan ke core/constants.dart
+// --- AKHIR PENGHAPUSAN ---
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -40,7 +33,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   TransactionType _selectedType = TransactionType.expense;
-  String _selectedCategory = kExpenseCategories.first;
+  String _selectedCategory = kExpenseCategories.first; // <-- Tetap aman
   DateTime _selectedDate = DateTime.now();
   File? _selectedFile; // File yang dipilih dari picker
   String? _savedAttachmentPath; // Path file setelah disalin ke folder app
@@ -74,7 +67,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
       // 4. Salin file ke path baru
       final newFile = await file.copy(newPath);
-      
+
       debugPrint('File disimpan di: ${newFile.path}');
       return newFile.path;
     } catch (e) {
@@ -223,7 +216,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final categories = _selectedType == TransactionType.income
         ? kIncomeCategories
         : kExpenseCategories;
-    
+
     // Pastikan _selectedCategory valid
     if (!categories.contains(_selectedCategory)) {
       _selectedCategory = categories.first;
@@ -275,14 +268,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   foregroundColor: MaterialStateProperty.resolveWith<Color?>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.selected)) {
-                         return _selectedType == TransactionType.expense
+                        return _selectedType == TransactionType.expense
                             ? AppColors.expense
                             : AppColors.income;
                       }
                       return Theme.of(context).colorScheme.onSurface;
                     },
                   ),
-                )
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -381,13 +374,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               // 6. Lampiran (Attachment)
               Card(
                 elevation: 0,
-                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                color:
+                    Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.5)
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withOpacity(0.5))),
                 child: ListTile(
                   leading: const Icon(Iconsax.attach_square),
                   title: Text(
@@ -395,21 +390,24 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         ? 'Tambah Bukti Transaksi'
                         : p.basename(_selectedFile!.path), // Tampilkan nama file
                     style: TextStyle(
-                      fontStyle: _selectedFile == null ? FontStyle.italic : FontStyle.normal,
+                      fontStyle: _selectedFile == null
+                          ? FontStyle.italic
+                          : FontStyle.normal,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  trailing: _selectedFile != null 
-                    ? IconButton(
-                        icon: const Icon(Iconsax.close_circle, color: AppColors.expense),
-                        onPressed: () {
-                          setState(() {
-                            _selectedFile = null;
-                            _savedAttachmentPath = null;
-                          });
-                        },
-                      ) 
-                    : const Icon(Iconsax.arrow_right_3),
+                  trailing: _selectedFile != null
+                      ? IconButton(
+                          icon: const Icon(Iconsax.close_circle,
+                              color: AppColors.expense),
+                          onPressed: () {
+                            setState(() {
+                              _selectedFile = null;
+                              _savedAttachmentPath = null;
+                            });
+                          },
+                        )
+                      : const Icon(Iconsax.arrow_right_3),
                   onTap: _showAttachmentPicker,
                 ),
               ),

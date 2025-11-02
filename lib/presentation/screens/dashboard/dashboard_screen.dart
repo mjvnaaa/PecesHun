@@ -6,7 +6,7 @@ import 'package:apkpribadi/presentation/widgets/expense_insights_card.dart';
 import 'package:apkpribadi/presentation/widgets/metrics_card.dart';
 import 'package:apkpribadi/presentation/widgets/transaction_list_tile.dart';
 import 'package:apkpribadi/providers/transaction_provider.dart';
-import 'package:flutter/material.dart'; // <-- INI YANG DIPERBAIKI
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -15,11 +15,10 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Pantau (watch) provider yang relevan
+    // Ambil data dari provider
     final metrics = ref.watch(dashboardMetricsProvider);
     final transactions = ref.watch(transactionListProvider);
 
-    // 2. Ambil data metrik (sudah dihitung oleh provider)
     final totalIncome = metrics['income'] ?? 0.0;
     final totalExpense = metrics['expense'] ?? 0.0;
     final totalBalance = metrics['balance'] ?? 0.0;
@@ -31,9 +30,9 @@ class DashboardScreen extends ConsumerWidget {
         elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 80.0), // Padding untuk FAB
+        padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 100.0),
         children: [
-          // Bagian Saldo Utama
+          // SALDO UTAMA — full width card
           MetricsCard(
             title: 'Saldo Saat Ini',
             amount: totalBalance,
@@ -42,38 +41,48 @@ class DashboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
 
-          // Grid Pemasukan & Pengeluaran
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.9, // Sesuaikan rasio agar pas
-            children: [
-              MetricsCard(
-                title: 'Total Pemasukan',
-                amount: totalIncome,
-                color: AppColors.income,
-                icon: Iconsax.arrow_down_2,
-              ),
-              MetricsCard(
-                title: 'Total Pengeluaran',
-                amount: totalExpense,
-                color: AppColors.expense,
-                icon: Iconsax.arrow_up_1,
-              ),
-            ],
+          // Dua kartu: Pemasukan & Pengeluaran — pakai Row + Expanded untuk kontrol ukuran
+          SizedBox(
+            // beri tinggi minimum agar isi tidak terpotong
+            height: 110,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 6.0),
+                    child: MetricsCard(
+                      title: 'Total Pemasukan',
+                      amount: totalIncome,
+                      color: AppColors.income,
+                      icon: Iconsax.arrow_down_2,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 6.0),
+                    child: MetricsCard(
+                      title: 'Total Pengeluaran',
+                      amount: totalExpense,
+                      color: AppColors.expense,
+                      icon: Iconsax.arrow_up_1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
 
-          // Analisis Cerdas (dari widget Anda)
+          // Analisis Cerdas
           const ExpenseInsightsCard(),
-
           const SizedBox(height: 20),
 
           // Grafik Pie Pengeluaran
           Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -85,7 +94,7 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    height: 200, // Beri tinggi tetap untuk chart
+                    height: 220, // tinggi chart yang cukup
                     child: transactions.isEmpty
                         ? const Center(child: Text('Data transaksi kosong.'))
                         : const SummaryPieChart(),
@@ -102,13 +111,12 @@ class DashboardScreen extends ConsumerWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-
           if (transactions.isEmpty)
             const Center(
               child: Padding(
                 padding: EdgeInsets.all(32.0),
-                child: Text('Belum ada transaksi.',
-                    style: TextStyle(fontStyle: FontStyle.italic)),
+                child:
+                    Text('Belum ada transaksi.', style: TextStyle(fontStyle: FontStyle.italic)),
               ),
             )
           else
@@ -123,13 +131,12 @@ class DashboardScreen extends ConsumerWidget {
         ],
       ),
 
-      // Tombol Tambah Transaksi
+      // FAB tambah transaksi
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const AddTransactionScreen()),
+            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
           );
         },
         child: const Icon(Iconsax.add),

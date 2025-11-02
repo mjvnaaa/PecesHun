@@ -23,3 +23,25 @@ class AppColors {
   static const Color surfaceDark = Color(0xFF1E1E1E);
   static const Color textDark = Color(0xFFE0E0E0);
 }
+
+// --- DITAMBAHKAN ---
+// Daftar Kategori Transaksi Terpusat
+const List<String> kIncomeCategories = [
+  'Gaji',
+  'Bonus',
+  'Investasi',
+  'Hadiah',
+  'Lainnya'
+];
+
+const List<String> kExpenseCategories = [
+  'Makanan',
+  'Transportasi',
+  'Tagihan',
+  'Hiburan',
+  'Belanja',
+  'Kesehatan',
+  'Pendidikan',
+  'Lainnya'
+];
+// --- AKHIR PENAMBAHAN ---

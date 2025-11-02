@@ -17,6 +17,7 @@ class SummaryPieChart extends ConsumerWidget {
     Color(0xFF3498DB),
     Color(0xFF9B59B6),
     Color(0xFFE67E22),
+    Color(0xFF1ABC9C),
   ];
 
   @override
@@ -34,6 +35,7 @@ class SummaryPieChart extends ConsumerWidget {
       );
     }
 
+    // --- Pembuatan Data Chart (Sections) ---
     final sections = data.entries.map((entry) {
       final percentage = (entry.value / totalExpense) * 100;
       final color = _chartColors[colorIndex % _chartColors.length];
@@ -53,13 +55,86 @@ class SummaryPieChart extends ConsumerWidget {
       );
     }).toList();
 
-    return PieChart(
-      PieChartData(
-        sections: sections,
-        centerSpaceRadius: 40,
-        sectionsSpace: 2,
-        // TODO: Tambahkan legenda (indicator) jika diinginkan
-      ),
+    // --- Perubahan Utama: Gunakan Column ---
+    return Column(
+      children: [
+        // 1. Chart
+        Expanded(
+          child: PieChart(
+            PieChartData(
+              sections: sections,
+              centerSpaceRadius: 40,
+              sectionsSpace: 2,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // 2. Legenda
+        _buildLegend(context, data),
+      ],
+    );
+  }
+
+  // --- Widget Baru: Legenda ---
+  Widget _buildLegend(BuildContext context, Map<String, double> data) {
+    int colorIndex = 0;
+
+    return Wrap(
+      spacing: 12.0, // Jarak horizontal antar item
+      runSpacing: 8.0, // Jarak vertikal antar baris
+      alignment: WrapAlignment.center,
+      children: data.entries.map((entry) {
+        final color = _chartColors[colorIndex % _chartColors.length];
+        colorIndex++;
+
+        return _Indicator(
+          color: color,
+          text: entry.key,
+          isSquare: false,
+          size: 14,
+        );
+      }).toList(),
+    );
+  }
+}
+
+// --- Widget Helper Baru: Indicator ---
+class _Indicator extends StatelessWidget {
+  final Color color;
+  final String text;
+  final bool isSquare;
+  final double size;
+
+  const _Indicator({
+    required this.color,
+    required this.text,
+    this.isSquare = false,
+    this.size = 16,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
+            color: color,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        )
+      ],
     );
   }
 }

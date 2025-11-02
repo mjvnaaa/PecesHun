@@ -2,14 +2,22 @@
 import 'package:intl/intl.dart';
 
 class Formatters {
-  // Format mata uang Rupiah
-  static String formatCurrency(double amount) {
-    final format = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp ',
-      decimalDigits: 0,
-    );
-    return format.format(amount);
+  // Format angka ke mata uang (otomatis ringkas)
+  static String formatCurrency(double value) {
+    if (value.abs() >= 1000000) {
+      // contoh: Rp 10.8M, Rp 487.6K
+      return NumberFormat.compactCurrency(
+        locale: 'id_ID',
+        symbol: 'Rp ',
+        decimalDigits: 2,
+      ).format(value);
+    } else {
+      return NumberFormat.currency(
+        locale: 'id_ID',
+        symbol: 'Rp ',
+        decimalDigits: 0,
+      ).format(value);
+    }
   }
 
   // Format tanggal
