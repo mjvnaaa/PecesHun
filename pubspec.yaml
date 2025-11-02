@@ -4,8 +4,6 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  # INI ADALAH PERBAIKAN DARI ERROR SEBELUMNYA
-  # Pastikan indentasi (spasi) di depannya benar
   sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
@@ -31,7 +29,7 @@ dependencies:
   # File Handling
   image_picker: ^1.1.2
   file_picker: ^8.0.5
-  open_filex: ^4.4.0 # Ini package baru yang kita tambahkan
+  open_filex: ^4.4.0
 
 dev_dependencies:
   flutter_test:
@@ -42,5 +40,15 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.10
 
+  # --- 1. SAYA TAMBAHKAN INI ---
+  flutter_launcher_icons: ^0.13.1
+
 flutter:
   uses-material-design: true
+
+# --- 2. SAYA TAMBAHKAN BLOK INI ---
+# (Pastikan sejajar dengan 'flutter:' di atas)
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/icon.png" # Path ke logo .png Anda

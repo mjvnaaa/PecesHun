@@ -25,7 +25,7 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FinTrack Dashboard'),
+        title: const Text('PecesHun'),
         centerTitle: true,
         elevation: 0,
       ),
@@ -115,8 +115,8 @@ class DashboardScreen extends ConsumerWidget {
             const Center(
               child: Padding(
                 padding: EdgeInsets.all(32.0),
-                child:
-                    Text('Belum ada transaksi.', style: TextStyle(fontStyle: FontStyle.italic)),
+                child: Text('Belum ada transaksi.',
+                    style: TextStyle(fontStyle: FontStyle.italic)),
               ),
             )
           else
@@ -136,7 +136,8 @@ class DashboardScreen extends ConsumerWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+            MaterialPageRoute(
+                builder: (context) => const AddTransactionScreen()),
           );
         },
         child: const Icon(Iconsax.add),

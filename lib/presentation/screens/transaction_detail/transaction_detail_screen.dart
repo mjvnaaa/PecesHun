@@ -1,12 +1,16 @@
 // lib/presentation/screens/transaction_detail/transaction_detail_screen.dart
 import 'dart:io';
-import 'package:path/path.dart' as p; // <-- DIPERBAIKI: package:path
+import 'package:path/path.dart' as p;
 import 'package:apkpribadi/core/constants.dart';
 import 'package:apkpribadi/core/utils/formatters.dart';
 import 'package:apkpribadi/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:open_filex/open_filex.dart'; // <-- DITAMBAHKAN
+import 'package:open_filex/open_filex.dart';
+
+// --- IMPORT BARU UNTUK EDIT ---
+import 'package:apkpribadi/presentation/screens/edit_transaction/edit_transaction_screen.dart';
+// --- AKHIR IMPORT BARU ---
 
 class TransactionDetailScreen extends StatelessWidget {
   final TransactionModel transaction;
@@ -27,6 +31,25 @@ class TransactionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Transaksi'),
+
+        // --- TOMBOL EDIT DITAMBAHKAN DI SINI ---
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.edit),
+            onPressed: () {
+              // Navigasi ke Halaman Edit
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditTransactionScreen(
+                    transaction: transaction,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+        // --- AKHIR TOMBOL EDIT ---
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -100,8 +123,10 @@ class TransactionDetailScreen extends StatelessWidget {
       title: Text(title, style: Theme.of(context).textTheme.bodySmall),
       subtitle: Text(
         value,
-        style:
-            Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }
