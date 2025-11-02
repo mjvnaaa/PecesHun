@@ -1,4 +1,3 @@
-// lib/core/theme/app_theme.dart
 import 'package:apkpribadi/core/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,7 +30,7 @@ class AppTheme {
         color: AppColors.textLight,
       ),
     ),
-    cardTheme: CardThemeData( // <-- DIPERBAIKI: Menjadi CardThemeData
+    cardTheme: CardThemeData(
       elevation: 2,
       shadowColor: Colors.black.withOpacity(0.1),
       shape: RoundedRectangleBorder(
@@ -71,7 +70,7 @@ class AppTheme {
         color: AppColors.textDark,
       ),
     ),
-    cardTheme: CardThemeData( // <-- DIPERBAIKI: Menjadi CardThemeData
+    cardTheme: CardThemeData(
       elevation: 4,
       color: AppColors.surfaceDark,
       shadowColor: Colors.black.withOpacity(0.5),

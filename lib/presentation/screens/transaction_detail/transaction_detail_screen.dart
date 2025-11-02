@@ -1,4 +1,3 @@
-// lib/presentation/screens/transaction_detail/transaction_detail_screen.dart
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:apkpribadi/core/constants.dart';
@@ -7,10 +6,7 @@ import 'package:apkpribadi/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:open_filex/open_filex.dart';
-
-// --- IMPORT BARU UNTUK EDIT ---
 import 'package:apkpribadi/presentation/screens/edit_transaction/edit_transaction_screen.dart';
-// --- AKHIR IMPORT BARU ---
 
 class TransactionDetailScreen extends StatelessWidget {
   final TransactionModel transaction;
@@ -31,13 +27,10 @@ class TransactionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Transaksi'),
-
-        // --- TOMBOL EDIT DITAMBAHKAN DI SINI ---
         actions: [
           IconButton(
             icon: const Icon(Iconsax.edit),
             onPressed: () {
-              // Navigasi ke Halaman Edit
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -49,12 +42,10 @@ class TransactionDetailScreen extends StatelessWidget {
             },
           ),
         ],
-        // --- AKHIR TOMBOL EDIT ---
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Header
           Card(
             elevation: 0,
             color: color.withOpacity(0.1),
@@ -63,7 +54,7 @@ class TransactionDetailScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '${sign} ${Formatters.formatCurrency(transaction.amount)}',
+                    '$sign ${Formatters.formatCurrency(transaction.amount)}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: color,
@@ -87,8 +78,6 @@ class TransactionDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Detail Info
           _buildDetailRow(
             context,
             icon: Iconsax.calendar_1,
@@ -101,10 +90,7 @@ class TransactionDetailScreen extends StatelessWidget {
             title: 'Catatan',
             value: transaction.notes ?? '-',
           ),
-
           const Divider(height: 32),
-
-          // Bukti Transaksi
           Text(
             'Bukti Transaksi',
             style: Theme.of(context).textTheme.titleLarge,
@@ -152,9 +138,7 @@ class TransactionDetailScreen extends StatelessWidget {
       );
     }
 
-    // Cek apakah file adalah gambar
     if (_isImageFile(transaction.attachmentPath!)) {
-      // **Memenuhi requirement: Gunakan Image.file()**
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.file(
@@ -166,7 +150,6 @@ class TransactionDetailScreen extends StatelessWidget {
         ),
       );
     } else {
-      // Jika bukan gambar (PDF, TXT, dll)
       return Card(
         elevation: 0,
         color: Theme.of(context).colorScheme.surfaceVariant,
@@ -175,21 +158,18 @@ class TransactionDetailScreen extends StatelessWidget {
           title: Text(p.basename(file.path)),
           subtitle: const Text('File dokumen'),
           trailing: const Icon(Iconsax.arrow_right_3),
-          // --- DIPERBAIKI ---
           onTap: () async {
-            // Menggunakan OpenFilex untuk membuka file
             final result = await OpenFilex.open(file.path);
             if (result.type != ResultType.done) {
-              // Tampilkan error jika gagal (misal: tidak ada aplikasi pembuka PDF)
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text('Gagal membuka file: ${result.message}')),
+                    content: Text('Gagal membuka file: ${result.message}'),
+                  ),
                 );
               }
             }
           },
-          // --- AKHIR PERBAIKAN ---
         ),
       );
     }

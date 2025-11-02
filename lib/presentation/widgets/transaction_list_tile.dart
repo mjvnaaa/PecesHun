@@ -1,4 +1,3 @@
-// lib/presentation/widgets/transaction_list_tile.dart
 import 'package:apkpribadi/core/constants.dart';
 import 'package:apkpribadi/core/utils/formatters.dart';
 import 'package:apkpribadi/data/models/transaction_model.dart';
@@ -13,7 +12,6 @@ class TransactionListTile extends ConsumerWidget {
   const TransactionListTile({super.key, required this.transaction});
 
   IconData _getCategoryIcon(String category) {
-    // Implementasi ikon sederhana berdasarkan kategori
     switch (category.toLowerCase()) {
       case 'makanan':
         return Iconsax.shopping_bag;
@@ -39,7 +37,6 @@ class TransactionListTile extends ConsumerWidget {
         : AppColors.expense;
     final sign = transaction.type == TransactionType.income ? '+' : '-';
 
-    // Swipe untuk Hapus
     return Dismissible(
       key: Key(transaction.id),
       direction: DismissDirection.endToStart,
@@ -50,7 +47,6 @@ class TransactionListTile extends ConsumerWidget {
         child: const Icon(Iconsax.trash, color: Colors.white),
       ),
       onDismissed: (direction) {
-        // Hapus transaksi dari database
         ref
             .read(transactionListProvider.notifier)
             .deleteTransaction(transaction.id);
@@ -85,7 +81,6 @@ class TransactionListTile extends ConsumerWidget {
                   fontSize: 15,
                 ),
               ),
-              // **Ikon "Bukti Transaksi" (Requirement)**
               if (transaction.attachmentPath != null)
                 const Icon(
                   Iconsax.attach_square,
@@ -95,11 +90,11 @@ class TransactionListTile extends ConsumerWidget {
             ],
           ),
           onTap: () {
-            // Buka halaman detail
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TransactionDetailScreen(transaction: transaction),
+                builder: (context) =>
+                    TransactionDetailScreen(transaction: transaction),
               ),
             );
           },

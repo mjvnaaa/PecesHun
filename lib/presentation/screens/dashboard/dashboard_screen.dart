@@ -1,4 +1,3 @@
-// lib/presentation/screens/dashboard/dashboard_screen.dart
 import 'package:apkpribadi/core/constants.dart';
 import 'package:apkpribadi/presentation/charts/summary_pie_chart.dart';
 import 'package:apkpribadi/presentation/screens/add_transaction/add_transaction_screen.dart';
@@ -15,7 +14,6 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Ambil data dari provider
     final metrics = ref.watch(dashboardMetricsProvider);
     final transactions = ref.watch(transactionListProvider);
 
@@ -32,7 +30,6 @@ class DashboardScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 100.0),
         children: [
-          // SALDO UTAMA — full width card
           MetricsCard(
             title: 'Saldo Saat Ini',
             amount: totalBalance,
@@ -40,10 +37,7 @@ class DashboardScreen extends ConsumerWidget {
             icon: Iconsax.wallet_2,
           ),
           const SizedBox(height: 12),
-
-          // Dua kartu: Pemasukan & Pengeluaran — pakai Row + Expanded untuk kontrol ukuran
           SizedBox(
-            // beri tinggi minimum agar isi tidak terpotong
             height: 110,
             child: Row(
               children: [
@@ -73,15 +67,12 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 20),
-
-          // Analisis Cerdas
           const ExpenseInsightsCard(),
           const SizedBox(height: 20),
-
-          // Grafik Pie Pengeluaran
           Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -94,7 +85,7 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    height: 220, // tinggi chart yang cukup
+                    height: 220,
                     child: transactions.isEmpty
                         ? const Center(child: Text('Data transaksi kosong.'))
                         : const SummaryPieChart(),
@@ -104,8 +95,6 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Daftar Transaksi Terakhir
           Text(
             'Transaksi Terakhir',
             style: Theme.of(context).textTheme.titleLarge,
@@ -115,8 +104,10 @@ class DashboardScreen extends ConsumerWidget {
             const Center(
               child: Padding(
                 padding: EdgeInsets.all(32.0),
-                child: Text('Belum ada transaksi.',
-                    style: TextStyle(fontStyle: FontStyle.italic)),
+                child: Text(
+                  'Belum ada transaksi.',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
               ),
             )
           else
@@ -130,14 +121,13 @@ class DashboardScreen extends ConsumerWidget {
             ),
         ],
       ),
-
-      // FAB tambah transaksi
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const AddTransactionScreen()),
+              builder: (context) => const AddTransactionScreen(),
+            ),
           );
         },
         child: const Icon(Iconsax.add),

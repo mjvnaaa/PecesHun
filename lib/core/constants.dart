@@ -1,16 +1,13 @@
-// lib/core/constants.dart
 import 'package:flutter/material.dart';
 
-// Nama Box Hive
 const String kTransactionBox = 'transactions';
 
-// Palet Warna (Emerald Green)
 class AppColors {
-  static const Color primary = Color(0xFF006A4E); // Emerald Green
+  static const Color primary = Color(0xFF006A4E);
   static const Color primaryLight = Color(0xFF50977A);
   static const Color primaryDark = Color(0xFF004028);
 
-  static const Color secondary = Color(0xFFF9A825); // Yellow Accent
+  static const Color secondary = Color(0xFFF9A825);
 
   static const Color income = Color(0xFF2ECC71);
   static const Color expense = Color(0xFFE74C3C);
@@ -24,8 +21,6 @@ class AppColors {
   static const Color textDark = Color(0xFFE0E0E0);
 }
 
-// --- DITAMBAHKAN ---
-// Daftar Kategori Transaksi Terpusat
 const List<String> kIncomeCategories = [
   'Gaji',
   'Bonus',
@@ -44,4 +39,3 @@ const List<String> kExpenseCategories = [
   'Pendidikan',
   'Lainnya'
 ];
-// --- AKHIR PENAMBAHAN ---

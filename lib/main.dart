@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'dart:developer';
 import 'package:apkpribadi/core/theme/app_theme.dart';
 import 'package:apkpribadi/data/models/transaction_model.dart';
@@ -14,26 +13,21 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // 📦 Inisialisasi Hive di direktori aplikasi
     final appDir = await getApplicationDocumentsDirectory();
     await Hive.initFlutter(appDir.path);
 
-    // 🧩 Daftarkan Adapter Hive
     Hive.registerAdapter(TransactionModelAdapter());
     Hive.registerAdapter(TransactionTypeAdapter());
 
-    // 🔓 Buka box transaksi (jika gagal, log error)
     await Hive.openBox<TransactionModel>('transactions');
     log('Hive box "transactions" berhasil dibuka.');
 
-    // 🌏 Inisialisasi locale (pakai Indonesia)
     Intl.defaultLocale = 'id_ID';
     await initializeDateFormatting('id_ID', null);
 
-    // 🚀 Jalankan aplikasi utama
     runApp(const ProviderScope(child: FinTrackApp()));
   } catch (e, stack) {
-    log('❌ Gagal inisialisasi aplikasi: $e');
+    log('Gagal inisialisasi aplikasi: $e');
     log(stack.toString());
   }
 }
@@ -48,7 +42,7 @@ class FinTrackApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Sesuai sistem pengguna
+      themeMode: ThemeMode.system,
       home: const DashboardScreen(),
     );
   }

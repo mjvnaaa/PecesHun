@@ -1,7 +1,5 @@
-// lib/data/models/transaction_model.dart
 import 'package:hive/hive.dart';
 
-// Jalankan "flutter pub run build_runner build" di terminal untuk generate file ini
 part 'transaction_model.g.dart';
 
 @HiveType(typeId: 1)
@@ -34,7 +32,7 @@ class TransactionModel extends HiveObject {
   late TransactionType type;
 
   @HiveField(6)
-  late String? attachmentPath; // Path ke file lokal
+  late String? attachmentPath;
 
   TransactionModel({
     required this.id,

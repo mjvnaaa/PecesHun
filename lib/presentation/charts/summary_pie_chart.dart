@@ -1,4 +1,3 @@
-// lib/presentation/charts/summary_pie_chart.dart
 import 'package:apkpribadi/core/constants.dart';
 import 'package:apkpribadi/providers/transaction_provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SummaryPieChart extends ConsumerWidget {
   const SummaryPieChart({super.key});
 
-  // Daftar warna untuk chart
   final List<Color> _chartColors = const [
     AppColors.primary,
     AppColors.secondary,
@@ -23,19 +21,16 @@ class SummaryPieChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(pieChartDataProvider);
-    final totalExpense =
-        data.values.fold(0.0, (sum, amount) => sum + amount);
+    final totalExpense = data.values.fold(0.0, (sum, amount) => sum + amount);
 
     int colorIndex = 0;
 
-    // Jika data dummy ("Belum ada data")
     if (data.containsKey('Belum ada data')) {
       return const Center(
         child: Text('Data pengeluaran masih kosong.'),
       );
     }
 
-    // --- Pembuatan Data Chart (Sections) ---
     final sections = data.entries.map((entry) {
       final percentage = (entry.value / totalExpense) * 100;
       final color = _chartColors[colorIndex % _chartColors.length];
@@ -55,10 +50,8 @@ class SummaryPieChart extends ConsumerWidget {
       );
     }).toList();
 
-    // --- Perubahan Utama: Gunakan Column ---
     return Column(
       children: [
-        // 1. Chart
         Expanded(
           child: PieChart(
             PieChartData(
@@ -69,19 +62,17 @@ class SummaryPieChart extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        // 2. Legenda
         _buildLegend(context, data),
       ],
     );
   }
 
-  // --- Widget Baru: Legenda ---
   Widget _buildLegend(BuildContext context, Map<String, double> data) {
     int colorIndex = 0;
 
     return Wrap(
-      spacing: 12.0, // Jarak horizontal antar item
-      runSpacing: 8.0, // Jarak vertikal antar baris
+      spacing: 12.0,
+      runSpacing: 8.0,
       alignment: WrapAlignment.center,
       children: data.entries.map((entry) {
         final color = _chartColors[colorIndex % _chartColors.length];
@@ -98,7 +89,6 @@ class SummaryPieChart extends ConsumerWidget {
   }
 }
 
-// --- Widget Helper Baru: Indicator ---
 class _Indicator extends StatelessWidget {
   final Color color;
   final String text;

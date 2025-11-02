@@ -1,5 +1,4 @@
-// lib/presentation/widgets/expense_insights_card.dart
-import 'package:apkpribadi/core/constants.dart'; // <-- Pastikan import ini
+import 'package:apkpribadi/core/constants.dart';
 import 'package:apkpribadi/providers/analysis_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +13,6 @@ class ExpenseInsightsCard extends ConsumerWidget {
     final analysis = ref.watch(advancedAnalysisProvider);
     final theme = Theme.of(context);
 
-    // Ambil data analisis
     final highestCategory = analysis['highestCategory']?.toString() ?? 'N/A';
     final avgExpense = analysis['averageExpensePerDay'] as double;
     final daysTracked = analysis['totalDaysTracked'] as int;
@@ -37,7 +35,6 @@ class ExpenseInsightsCard extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Divider(color: theme.dividerColor.withOpacity(0.5), height: 20),
-            
             _buildInsightRow(
               context,
               icon: Iconsax.category,
@@ -69,11 +66,13 @@ class ExpenseInsightsCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildInsightRow(BuildContext context,
-      {required IconData icon,
-      required String title,
-      required String value,
-      Color? color}) {
+  Widget _buildInsightRow(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String value,
+    Color? color,
+  }) {
     final theme = Theme.of(context);
     final defaultColor = theme.textTheme.bodyMedium?.color;
     final valueColor = color ?? defaultColor;
@@ -90,7 +89,7 @@ class ExpenseInsightsCard extends ConsumerWidget {
               Text(
                 title,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: defaultColor?.withOpacity(0.8)
+                  color: defaultColor?.withOpacity(0.8),
                 ),
               ),
             ],
@@ -107,7 +106,6 @@ class ExpenseInsightsCard extends ConsumerWidget {
     );
   }
 
-  // Fungsi helper untuk ikon dan warna tren
   IconData _getTrendIcon(String trend) {
     switch (trend) {
       case 'naik':
@@ -122,11 +120,11 @@ class ExpenseInsightsCard extends ConsumerWidget {
   Color _getTrendColor(String trend) {
     switch (trend) {
       case 'naik':
-        return AppColors.expense; // Merah
+        return AppColors.expense;
       case 'turun':
-        return AppColors.income; // Hijau
+        return AppColors.income;
       default:
-        return AppColors.primary; // Netral
+        return AppColors.primary;
     }
   }
 }

@@ -1,5 +1,3 @@
-// lib/presentation/screens/edit_transaction/edit_transaction_screen.dart
-
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:apkpribadi/core/constants.dart';
@@ -16,7 +14,6 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class EditTransactionScreen extends ConsumerStatefulWidget {
-  // 1. Menerima data transaksi yang akan diedit
   final TransactionModel transaction;
 
   const EditTransactionScreen({super.key, required this.transaction});
@@ -29,26 +26,23 @@ class EditTransactionScreen extends ConsumerStatefulWidget {
 class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Form Controllers & State
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   late TransactionType _selectedType;
   late String _selectedCategory;
   late DateTime _selectedDate;
 
-  // State untuk file lampiran
-  File? _newFile; // File BARU yang dipilih
-  String? _existingAttachmentPath; // Path file LAMA
-  bool _attachmentWasRemoved = false; // Flag jika file lama dihapus
+  File? _newFile;
+  String? _existingAttachmentPath;
+  bool _attachmentWasRemoved = false;
 
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    // 2. Mengisi form dengan data yang ada
     final tx = widget.transaction;
-    _amountController.text = tx.amount.toStringAsFixed(0); // Tampilkan tanpa desimal
+    _amountController.text = tx.amount.toStringAsFixed(0);
     _notesController.text = tx.notes ?? '';
     _selectedType = tx.type;
     _selectedCategory = tx.category;
@@ -63,7 +57,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     super.dispose();
   }
 
-  // Fungsi ini sama persis dengan di AddTransactionScreen
   Future<String?> _saveFileToAppDirectory(File file) async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
@@ -87,14 +80,13 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     }
   }
 
-  // --- Opsi Pilihan File (Sama) ---
   Future<void> _pickFromCamera() async {
     final XFile? image =
         await _imagePicker.pickImage(source: ImageSource.camera);
     if (image != null) {
       setState(() {
         _newFile = File(image.path);
-        _attachmentWasRemoved = false; // Jika user memilih file baru
+        _attachmentWasRemoved = false;
       });
     }
   }
@@ -161,7 +153,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     );
   }
 
-  // --- Logika Submit Form (BERBEDA) ---
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       showDialog(
@@ -170,41 +161,34 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-      // 1. Logika simpan file yang diperbarui
       String? finalAttachmentPath = _existingAttachmentPath;
 
       if (_newFile != null) {
-        // Jika ada file BARU, simpan file itu.
-        // (Idealnya, file lama dihapus, tapi untuk simpel, kita biarkan)
         finalAttachmentPath = await _saveFileToAppDirectory(_newFile!);
       } else if (_attachmentWasRemoved) {
-        // Jika tidak ada file baru DAN file lama ditandai hapus
         finalAttachmentPath = null;
       }
 
-      // 2. Buat Model Transaksi yang DI-UPDATE
       final updatedTransaction = TransactionModel(
-        id: widget.transaction.id, // <-- Gunakan ID LAMA
+        id: widget.transaction.id,
         amount: double.parse(_amountController.text),
         category: _selectedCategory,
         date: _selectedDate,
         type: _selectedType,
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
-        attachmentPath: finalAttachmentPath, // Path file yang sudah final
+        attachmentPath: finalAttachmentPath,
       );
 
-      // 3. Simpan ke Database via Riverpod
       try {
-        // 3. Panggil 'updateTransaction' BUKAN 'addTransaction'
         await ref
             .read(transactionListProvider.notifier)
             .updateTransaction(updatedTransaction);
 
         if (mounted) {
-          Navigator.pop(context); // Tutup loading
-          Navigator.pop(context); // Tutup halaman Edit
-          Navigator.pop(context); // Tutup halaman Detail (agar kembali ke Dashboard)
-          
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Transaksi berhasil diperbarui!'),
@@ -214,7 +198,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         }
       } catch (e) {
         if (mounted) {
-          Navigator.pop(context); // Tutup loading
+          Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Gagal memperbarui: $e')),
           );
@@ -225,7 +209,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Logika ini sama, untuk update list kategori
     final categories = _selectedType == TransactionType.income
         ? kIncomeCategories
         : kExpenseCategories;
@@ -233,7 +216,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       _selectedCategory = categories.first;
     }
 
-    // Logika untuk menampilkan nama file di UI
     String attachmentText = 'Tambah Bukti Transaksi';
     bool hasAttachment = false;
     if (_newFile != null) {
@@ -244,10 +226,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       hasAttachment = true;
     }
 
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Transaksi'), // <-- Judul diubah
+        title: const Text('Edit Transaksi'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -256,7 +237,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 1. Tipe Transaksi (Sama)
               SegmentedButton<TransactionType>(
                 segments: const [
                   ButtonSegment(
@@ -301,8 +281,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // 2. Jumlah (Amount) (Sama)
               TextFormField(
                 controller: _amountController,
                 decoration: InputDecoration(
@@ -326,8 +304,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // 3. Kategori (Sama)
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 decoration: InputDecoration(
@@ -350,8 +326,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // 4. Tanggal (Sama)
               TextFormField(
                 readOnly: true,
                 decoration: InputDecoration(
@@ -379,8 +353,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // 5. Catatan (Sama)
               TextFormField(
                 controller: _notesController,
                 decoration: InputDecoration(
@@ -393,8 +365,6 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
-
-              // 6. Lampiran (Logika Tampilan Berbeda)
               Card(
                 elevation: 0,
                 color: Theme.of(context)
@@ -413,7 +383,8 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                   title: Text(
                     attachmentText,
                     style: TextStyle(
-                      fontStyle: hasAttachment ? FontStyle.normal : FontStyle.italic,
+                      fontStyle:
+                          hasAttachment ? FontStyle.normal : FontStyle.italic,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -434,12 +405,10 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // 7. Tombol Simpan
               ElevatedButton.icon(
                 onPressed: _submitForm,
                 icon: const Icon(Iconsax.save_2),
-                label: const Text('Simpan Perubahan'), // <-- Teks diubah
+                label: const Text('Simpan Perubahan'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Theme.of(context).colorScheme.primary,
