@@ -46,13 +46,37 @@ class TransactionListTile extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: const Icon(Iconsax.trash, color: Colors.white),
       ),
-      onDismissed: (direction) {
-        ref
+      onDismissed: (direction) async {
+        final transactionToUndo = transaction;
+
+        await ref
             .read(transactionListProvider.notifier)
-            .deleteTransaction(transaction.id);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaksi dihapus')),
+            .deleteTransactionDataOnly(transactionToUndo.id);
+
+        ScaffoldMessenger.of(context).clearSnackBars();
+
+        final controller = ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Transaksi dihapus'),
+            action: SnackBarAction(
+              label: 'Batalkan',
+              onPressed: () {
+                ref
+                    .read(transactionListProvider.notifier)
+                    .addTransaction(transactionToUndo);
+              },
+            ),
+            duration: const Duration(seconds: 4),
+          ),
         );
+
+        final reason = await controller.closed;
+
+        if (reason != SnackBarClosedReason.action) {
+          await ref
+              .read(transactionListProvider.notifier)
+              .deleteAttachmentFile(transactionToUndo);
+        }
       },
       child: Card(
         margin: const EdgeInsets.only(bottom: 10),

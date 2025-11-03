@@ -35,6 +35,14 @@ class TransactionNotifier extends StateNotifier<List<TransactionModel>> {
     await _repository.deleteTransaction(id);
   }
 
+  Future<void> deleteTransactionDataOnly(String id) async {
+    await _repository.deleteTransactionDataOnly(id);
+  }
+
+  Future<void> deleteAttachmentFile(TransactionModel transaction) async {
+    await _repository.deleteAttachmentFile(transaction);
+  }
+
   Future<void> updateTransaction(TransactionModel transaction) async {
     await _repository.updateTransaction(transaction);
   }

@@ -46,9 +46,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-# --- 2. SAYA TAMBAHKAN BLOK INI ---
-# (Pastikan sejajar dengan 'flutter:' di atas)
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/logo/icon.png" # Path ke logo .png Anda
+  image_path: "assets/logo/icon.png"
